@@ -1,0 +1,17 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-TheLastHope.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHope.init.gen.cpp.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeCharacter.gen.cpp.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeGameMode.gen.cpp.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHope.cpp.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeCharacter.cpp.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeGameMode.cpp.obj"
+"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\Default.rc2.res"
+/OUT:"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\UnrealEditor-TheLastHope.lib"
