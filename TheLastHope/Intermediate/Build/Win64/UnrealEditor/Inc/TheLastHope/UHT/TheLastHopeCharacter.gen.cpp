@@ -12,6 +12,7 @@ void EmptyLinkFunctionForGeneratedCodeTheLastHopeCharacter() {}
 	ENGINE_API UClass* Z_Construct_UClass_ACharacter();
 	ENGINE_API UClass* Z_Construct_UClass_UCameraComponent_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_USpringArmComponent_NoRegister();
+	ENGINE_API UClass* Z_Construct_UClass_UStaticMeshComponent_NoRegister();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputMappingContext_NoRegister();
 	THELASTHOPE_API UClass* Z_Construct_UClass_ATheLastHopeCharacter();
@@ -56,6 +57,22 @@ void EmptyLinkFunctionForGeneratedCodeTheLastHopeCharacter() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_LookAction_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_LookAction;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_GrappleAction_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_GrappleAction;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_SphereVisual_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_SphereVisual;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_WalkSpeed_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_WalkSpeed;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_JumpVelocity_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_JumpVelocity;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -158,6 +175,39 @@ void EmptyLinkFunctionForGeneratedCodeTheLastHopeCharacter() {}
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_LookAction = { "LookAction", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ATheLastHopeCharacter, LookAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_LookAction_MetaData), Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_LookAction_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_GrappleAction_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
+		{ "ModuleRelativePath", "TheLastHopeCharacter.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_GrappleAction = { "GrappleAction", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ATheLastHopeCharacter, GrappleAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_GrappleAction_MetaData), Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_GrappleAction_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_SphereVisual_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Visual" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "TheLastHopeCharacter.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_SphereVisual = { "SphereVisual", nullptr, (EPropertyFlags)0x00400000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ATheLastHopeCharacter, SphereVisual), Z_Construct_UClass_UStaticMeshComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_SphereVisual_MetaData), Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_SphereVisual_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_WalkSpeed_MetaData[] = {
+		{ "Category", "Movement" },
+		{ "ClampMin", "0" },
+		{ "ModuleRelativePath", "TheLastHopeCharacter.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_WalkSpeed = { "WalkSpeed", nullptr, (EPropertyFlags)0x0010000000010005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ATheLastHopeCharacter, WalkSpeed), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_WalkSpeed_MetaData), Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_WalkSpeed_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_JumpVelocity_MetaData[] = {
+		{ "Category", "Movement" },
+		{ "ClampMin", "0" },
+		{ "ModuleRelativePath", "TheLastHopeCharacter.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_JumpVelocity = { "JumpVelocity", nullptr, (EPropertyFlags)0x0010000000010005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ATheLastHopeCharacter, JumpVelocity), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_JumpVelocity_MetaData), Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_JumpVelocity_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ATheLastHopeCharacter_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_CameraBoom,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_FollowCamera,
@@ -165,6 +215,10 @@ void EmptyLinkFunctionForGeneratedCodeTheLastHopeCharacter() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_JumpAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_MoveAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_LookAction,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_GrappleAction,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_SphereVisual,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_WalkSpeed,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATheLastHopeCharacter_Statics::NewProp_JumpVelocity,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_ATheLastHopeCharacter_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ATheLastHopeCharacter>::IsAbstract,
@@ -204,9 +258,9 @@ void EmptyLinkFunctionForGeneratedCodeTheLastHopeCharacter() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Aashish_Subramanian_Documents_GitHub_2025EpicMegaJam_TheLastHope_Source_TheLastHope_TheLastHopeCharacter_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ATheLastHopeCharacter, ATheLastHopeCharacter::StaticClass, TEXT("ATheLastHopeCharacter"), &Z_Registration_Info_UClass_ATheLastHopeCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ATheLastHopeCharacter), 1198901836U) },
+		{ Z_Construct_UClass_ATheLastHopeCharacter, ATheLastHopeCharacter::StaticClass, TEXT("ATheLastHopeCharacter"), &Z_Registration_Info_UClass_ATheLastHopeCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ATheLastHopeCharacter), 1550593409U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Aashish_Subramanian_Documents_GitHub_2025EpicMegaJam_TheLastHope_Source_TheLastHope_TheLastHopeCharacter_h_2787106822(TEXT("/Script/TheLastHope"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Aashish_Subramanian_Documents_GitHub_2025EpicMegaJam_TheLastHope_Source_TheLastHope_TheLastHopeCharacter_h_3279292121(TEXT("/Script/TheLastHope"),
 		Z_CompiledInDeferFile_FID_Users_Aashish_Subramanian_Documents_GitHub_2025EpicMegaJam_TheLastHope_Source_TheLastHope_TheLastHopeCharacter_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_Aashish_Subramanian_Documents_GitHub_2025EpicMegaJam_TheLastHope_Source_TheLastHope_TheLastHopeCharacter_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

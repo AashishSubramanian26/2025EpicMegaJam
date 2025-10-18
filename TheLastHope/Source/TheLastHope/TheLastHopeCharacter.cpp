@@ -20,7 +20,27 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+
+	GetMesh()->SetHiddenInGame(true);
+	GetMesh()->SetSkeletalMesh(nullptr);
+
+	//Visual sphere
+	SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SphereVisual"));
+	SphereVisual->SetupAttachment(GetCapsuleComponent());
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereRef(
+		TEXT("/Engine/BasicShapes/Sphere.Sphere")
+	);
+	if (SphereRef.Succeeded())
+	{
+		SphereVisual->SetStaticMesh(SphereRef.Object);
+	}
 		
+	// Place it so it touches the ground:
+	const float CapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(); // 96
+	const float SphereRadius = 50.f; // default engine sphere
+	SphereVisual->SetRelativeLocation(FVector(0.f, 0.f, -CapsuleHalfHeight + SphereRadius));
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -32,12 +52,13 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
-	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	//GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->JumpZVelocity = JumpVelocity;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
