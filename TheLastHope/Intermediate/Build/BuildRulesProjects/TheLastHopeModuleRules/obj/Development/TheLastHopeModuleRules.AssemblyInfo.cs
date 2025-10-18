@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TheLastHopeModuleRules")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Development")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+025fa4544a2ae15d8329a00a9b0b1ae6b3ba68df")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d80ee269de60c5e37a92c8ebe883054db1c6d32")]
 [assembly: System.Reflection.AssemblyProductAttribute("TheLastHopeModuleRules")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TheLastHopeModuleRules")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
