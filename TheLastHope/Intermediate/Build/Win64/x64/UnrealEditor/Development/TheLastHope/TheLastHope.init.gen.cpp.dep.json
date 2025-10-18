@@ -1,11 +1,11 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "c:\\users\\anish\\source\\repos\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\unrealeditor\\inc\\thelasthope\\uht\\thelasthope.init.gen.cpp",
+        "Source": "c:\\users\\aashish subramanian\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\unrealeditor\\inc\\thelasthope\\uht\\thelasthope.init.gen.cpp",
         "ProvidedModule": "",
-        "PCH": "c:\\users\\anish\\source\\repos\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\x64\\thelasthopeeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "PCH": "c:\\users\\aashish subramanian\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\x64\\thelasthopeeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
         "Includes": [
-            "c:\\users\\anish\\source\\repos\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\thelasthope\\definitions.thelasthope.h"
+            "c:\\users\\aashish subramanian\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\thelasthope\\definitions.thelasthope.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

@@ -75,5 +75,5 @@
 /DPROJECT_COPYRIGHT_STRING="Fill out your copyright notice in the Description page of Project Settings."
 /DPROJECT_PRODUCT_NAME="Third Person Game Template"
 /DPROJECT_PRODUCT_IDENTIFIER=TheLastHope
-/fo "C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\Default.rc2.res"
+/fo "C:\Users\anish\source\repos\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\Default.rc2.res"
 "..\Build\Windows\Resources\Default.rc2"
