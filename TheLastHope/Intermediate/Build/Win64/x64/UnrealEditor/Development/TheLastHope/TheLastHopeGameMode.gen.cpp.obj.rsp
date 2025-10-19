@@ -1,11 +1,11 @@
-"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\UnrealEditor\Inc\TheLastHope\UHT\TheLastHopeGameMode.gen.cpp"
-/FI"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h"
-/FI"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\Definitions.TheLastHope.h"
-/Yu"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h"
-/Fp"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h.pch"
-/Fo"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeGameMode.gen.cpp.obj"
-/sourceDependencies "C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeGameMode.gen.cpp.dep.json"
-@"C:\Users\Aashish Subramanian\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHope.Shared.rsp"
+"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\UnrealEditor\Inc\TheLastHope\UHT\TheLastHopeGameMode.gen.cpp"
+/FI"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h"
+/FI"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\Definitions.TheLastHope.h"
+/Yu"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h"
+/Fp"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\TheLastHopeEditor\Development\Engine\SharedPCH.Engine.Cpp20.h.pch"
+/Fo"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeGameMode.gen.cpp.obj"
+/sourceDependencies "C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHopeGameMode.gen.cpp.dep.json"
+@"C:\Users\anish\Documents\GitHub\2025EpicMegaJam\TheLastHope\Intermediate\Build\Win64\x64\UnrealEditor\Development\TheLastHope\TheLastHope.Shared.rsp"
 /Zc:inline
 /nologo
 /Oi

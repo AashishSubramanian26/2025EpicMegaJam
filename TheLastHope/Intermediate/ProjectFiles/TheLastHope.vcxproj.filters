@@ -11,6 +11,7 @@
     <None Include="..\..\Source\TheLastHopeEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -32,6 +33,24 @@
     <Filter Include="Source\TheLastHope">
       <UniqueIdentifier>{84165464-2479-3B8C-A19A-3E6DE0293737}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\TheLastHope\EnemyBase.cpp">
+      <Filter>Source\TheLastHope</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TheLastHope\EnemyBase.h">
+      <Filter>Source\TheLastHope</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TheLastHope\MassExchange.cpp">
+      <Filter>Source\TheLastHope</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TheLastHope\MassExchange.h">
+      <Filter>Source\TheLastHope</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TheLastHope\MassExchangeComponent.cpp">
+      <Filter>Source\TheLastHope</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TheLastHope\MassExchangeComponent.h">
+      <Filter>Source\TheLastHope</Filter>
+    </ClInclude>
     <None Include="..\..\Source\TheLastHope\TheLastHope.Build.cs">
       <Filter>Source\TheLastHope</Filter>
     </None>
