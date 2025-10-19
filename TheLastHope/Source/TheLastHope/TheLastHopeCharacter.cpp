@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TheLastHopeCharacter.h"
 #include "Engine/LocalPlayer.h"
@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -59,6 +61,8 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->JumpZVelocity = JumpVelocity;
+	GetCharacterMovement()->GravityScale = 0.5;
+	GetCharacterMovement()->bApplyGravityWhileJumping = false; 
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -88,6 +92,16 @@ void ATheLastHopeCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	PrimaryActorTick.bCanEverTick = true;   // allow ticking
+}
+
+void ATheLastHopeCharacter::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+
+	if (isGrappling) {
+
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -107,6 +121,10 @@ void ATheLastHopeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATheLastHopeCharacter::Look);
+
+		//Grapple
+		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Started, this, &ATheLastHopeCharacter::Grapple);
+		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Completed, this, &ATheLastHopeCharacter::StopGrapple);
 	}
 	else
 	{
@@ -134,6 +152,8 @@ void ATheLastHopeCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+
+		//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Moving!"));
 	}
 }
 
@@ -148,4 +168,55 @@ void ATheLastHopeCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
+	// input is a Vector2D
+	//FVector2D Input = Value.Get<FVector2D>();
+
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("ENTERED GRAPPLE"));
+
+	if (Controller != nullptr) {
+		FVector StartLocation=  FollowCamera->GetComponentLocation() /*+ FVector(400.0f, 0.0f, 0.0f)*/;
+		FRotator EndRotation = FollowCamera->GetComponentRotation();
+		FVector EndLocation = EndRotation.Vector();
+		EndLocation *= float(6000);
+		EndLocation += StartLocation; 
+
+		// --- Debug so you can SEE it and know it fired ---
+		UE_LOG(LogTemplateCharacter, Log, TEXT("Grapple fired. Start=%s End=%s"),
+			*StartLocation.ToString(), *EndLocation.ToString());
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Grapple pressed!"));
+
+
+		FHitResult HitResult;
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this);
+
+		bool bHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartLocation,
+			EndLocation,
+			ECC_Visibility,
+			QueryParams
+		);
+
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.0f, 0, 2.5f);
+
+		if (bHit == true) {
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Did hit object"));
+			FVector GrabPointer = HitResult.ImpactPoint; 
+			isGrappling = true; 
+			GetCharacterMovement()->SetMovementMode(MOVE_Flying, 0);
+		}
+		else {
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Did not hit object"));
+		}
+	}
+}
+
+void ATheLastHopeCharacter::StopGrapple(const FInputActionValue& Value) {
+	isGrappling = false;
+	GetCharacterMovement()->SetMovementMode(MOVE_Falling, 0);
 }

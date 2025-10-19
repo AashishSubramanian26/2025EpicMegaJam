@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "TheLastHopeCharacter.generated.h"
+//#include "Engine/World.h"
+//#include "DrawDebugHelpers.h"
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -57,6 +59,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0"))
 	float JumpVelocity = 700.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool isGrappling = false; 
 
 protected:
 
@@ -67,6 +72,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Grapple(const FInputActionValue& Value);
+
+	void StopGrapple(const FInputActionValue& Value);
 			
 
 protected:
@@ -75,6 +82,8 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	/** Returns CameraBoom subobject **/
