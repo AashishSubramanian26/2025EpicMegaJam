@@ -82,8 +82,19 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 
 	CableVisual = CreateDefaultSubobject<UCableComponent>(TEXT("CableVisual"));
 	CableVisual->SetupAttachment(SphereVisual);
-	CableVisual->CableLength = 1;
+	CableVisual->NumSegments = 1;
 	CableVisual->SetVisibility(false);
+	CableVisual->bEnableStiffness = true;   // optional: nicer feel
+
+	//CableVisual = CreateDefaultSubobject<UCableComponent>(TEXT("CableVisual"));
+	//CableVisual->SetupAttachment(SphereVisual);
+
+	//// real starting length, not 1
+	////CableVisual->CableLength = 2000.f;
+	////CableVisual->NumSegments = 20;          // optional: smoother
+	//CableVisual->bEnableStiffness = true;   // optional: nicer feel
+
+	//CableVisual->SetVisibility(false);
 }
 
 void ATheLastHopeCharacter::BeginPlay()
@@ -106,27 +117,24 @@ void ATheLastHopeCharacter::BeginPlay()
 void ATheLastHopeCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (isGrappling) {
-		FTransform WorldTransformOfActor;
-
-		FVector LocalLocation = WorldTransformOfActor.InverseTransformPosition(GrabPointer);
-
-		CableVisual->EndLocation = LocalLocation;
+	if (isGrappling)
+	{
+		// If we didn’t attach the end, keep the free end at GrabPointer (local space)
+		if (!CableVisual->bAttachEnd)
+		{
+			const FTransform CableXf = CableVisual->GetComponentTransform();
+			CableVisual->EndLocation = CableXf.InverseTransformPosition(GrabPointer);
+		}
 
 		FVector From = GetActorLocation();
 		FVector To = GrabPointer;
 		FVector Dir = (To - From);
-
-		if (!Dir.IsNearlyZero()) {
-			Dir.Normalize(0.0001);
-		}
+		if (!Dir.IsNearlyZero()) { Dir.Normalize(); }
 
 		FVector RightInfluence = GetActorRightVector() * MoveRightLeft;
 
 		FVector Combined = Dir + RightInfluence;
-		if (!Combined.IsNearlyZero()) {
-			Combined.Normalize(0.0001);
-		}
+		if (!Combined.IsNearlyZero()) { Combined.Normalize(); }
 
 		const float GrappleForce = 250000.f;
 		FVector Force = Combined * GrappleForce;
@@ -155,7 +163,9 @@ void ATheLastHopeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		//Grapple
 		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Started, this, &ATheLastHopeCharacter::Grapple);
-		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Completed, this, &ATheLastHopeCharacter::StopGrapple);
+		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Completed, this, &ATheLastHopeCharacter::StopGrapple); 
+		//EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &ATheLastHopeCharacter::Grapple);  
+		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Canceled, this, &ATheLastHopeCharacter::StopGrapple);
 	}
 	else
 	{
@@ -236,13 +246,29 @@ void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
 
 		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.0f, 0, 2.5f);
 
-		if (bHit == true) {
+		if (bHit == true)
+		{
 			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Did hit object"));
-			GrabPointer = HitResult.ImpactPoint; 
-			isGrappling = true; 
+
+			GrabPointer = HitResult.ImpactPoint;
+			isGrappling = true;
+
 			GetCharacterMovement()->SetMovementMode(MOVE_Flying, 0);
+
+			// Attach cable end to the hit component so it sticks there
+			if (HitResult.Component.IsValid())
+			{
+				CableVisual->SetAttachEndToComponent(HitResult.Component.Get(), NAME_None);
+				CableVisual->bAttachEnd = true;
+			}
+
+			// Make rope about the distance to target so it looks right immediately
+			const float Dist = FVector::Distance(CableVisual->GetComponentLocation(), GrabPointer);
+			CableVisual->CableLength = FMath::Max(Dist * 1.05f, 100.f);
+
 			CableVisual->SetVisibility(true);
 		}
+
 		else {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Did not hit object"));
 		}
@@ -251,6 +277,13 @@ void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
 
 void ATheLastHopeCharacter::StopGrapple(const FInputActionValue& Value) {
 	isGrappling = false;
-	GetCharacterMovement()->SetMovementMode(MOVE_Falling, 0);
+	//GetCharacterMovement()->SetMovementMode(MOVE_Falling, 0);
+
+	// Detach end so next shot starts “free”
+	CableVisual->SetAttachEndTo(nullptr, NAME_None);
+	CableVisual->bAttachEnd = false;
+
 	CableVisual->SetVisibility(false);
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Let go of grapple"));
 }
