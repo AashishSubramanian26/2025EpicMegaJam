@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "CableComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -77,6 +78,12 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+
+	CableVisual = CreateDefaultSubobject<UCableComponent>(TEXT("CableVisual"));
+	CableVisual->SetupAttachment(SphereVisual);
+	CableVisual->CableLength = 1;
+	CableVisual->SetVisibility(false);
 }
 
 void ATheLastHopeCharacter::BeginPlay()
@@ -100,7 +107,31 @@ void ATheLastHopeCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	if (isGrappling) {
+		FTransform WorldTransformOfActor;
 
+		FVector LocalLocation = WorldTransformOfActor.InverseTransformPosition(GrabPointer);
+
+		CableVisual->EndLocation = LocalLocation;
+
+		FVector From = GetActorLocation();
+		FVector To = GrabPointer;
+		FVector Dir = (To - From);
+
+		if (!Dir.IsNearlyZero()) {
+			Dir.Normalize(0.0001);
+		}
+
+		FVector RightInfluence = GetActorRightVector() * MoveRightLeft;
+
+		FVector Combined = Dir + RightInfluence;
+		if (!Combined.IsNearlyZero()) {
+			Combined.Normalize(0.0001);
+		}
+
+		const float GrappleForce = 250000.f;
+		FVector Force = Combined * GrappleForce;
+
+		GetCharacterMovement()->AddForce(Force);
 	}
 }
 
@@ -136,6 +167,7 @@ void ATheLastHopeCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
+	MoveRightLeft = MovementVector.X;
 
 	if (Controller != nullptr)
 	{
@@ -206,9 +238,10 @@ void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
 
 		if (bHit == true) {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Did hit object"));
-			FVector GrabPointer = HitResult.ImpactPoint; 
+			GrabPointer = HitResult.ImpactPoint; 
 			isGrappling = true; 
 			GetCharacterMovement()->SetMovementMode(MOVE_Flying, 0);
+			CableVisual->SetVisibility(true);
 		}
 		else {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Did not hit object"));
@@ -219,4 +252,5 @@ void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
 void ATheLastHopeCharacter::StopGrapple(const FInputActionValue& Value) {
 	isGrappling = false;
 	GetCharacterMovement()->SetMovementMode(MOVE_Falling, 0);
+	CableVisual->SetVisibility(false);
 }

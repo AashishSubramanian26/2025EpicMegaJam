@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Engine/World.h"
 #include "TheLastHopeCharacter.generated.h"
-//#include "Engine/World.h"
-//#include "DrawDebugHelpers.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UCableComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -52,6 +52,9 @@ class ATheLastHopeCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SphereVisual;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual", meta = (AllowPrivateAccess = "true"))
+	UCableComponent* CableVisual;
+
 public:
 	ATheLastHopeCharacter();
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0"))
@@ -63,6 +66,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool isGrappling = false; 
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FVector GrabPointer;
+	float MoveRightLeft = 0.f;
 protected:
 
 	/** Called for movement input */
