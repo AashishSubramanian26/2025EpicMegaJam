@@ -9,7 +9,7 @@
 #include "EnemyBase.generated.h"
 
 UCLASS()
-class THELASTHOPE_API AEnemyBase : public AActor, public IMassExchange
+class THELASTHOPE_API AEnemyBase : public AActor
 {
 	GENERATED_BODY()
 	
@@ -27,7 +27,33 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UMassExchangeComponent* MassExchangeComp;
 
+	// On Hit of the Body Mesh
+	UFUNCTION()
+		void OnBodyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Hit Cooldown Timer
+	FTimerHandle HitCooldownTimer;
+
+	// Duration of Hit Cooldown
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mass Exchange")
+	float HitCooldownDuration = 0.1f;
+
+	// Resets the Hit Cooldown
+	UFUNCTION()
+	void ResetHitCooldown();
+
+	// Can be overridden for visual or audio effects on hit cooldown start
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
+	void StartHitCoolDown();
+
+	// Can be overridden for visual or audio effects on hit cooldown end
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
+	void EndHitCoolDown();
+	
+	bool bInHitCooldown = false;
 };
