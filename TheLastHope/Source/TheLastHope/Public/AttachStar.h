@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/StaticMeshComponent.h" 
+#include "Components/BoxComponent.h"          
 #include "AttachStar.generated.h"
+
+class UStaticMeshComponent;
+class UBoxComponent;
 
 UCLASS()
 class THELASTHOPE_API AAttachStar : public AActor
@@ -22,5 +27,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="AttachStar")
+	UStaticMeshComponent* StarMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="AttachStar")
+	UBoxComponent* GrappleBox;
 
 };
