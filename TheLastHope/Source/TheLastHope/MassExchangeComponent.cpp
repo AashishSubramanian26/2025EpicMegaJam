@@ -4,6 +4,7 @@
 #include "MassExchangeComponent.h"
 
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UMassExchangeComponent::UMassExchangeComponent()
@@ -26,7 +27,6 @@ void UMassExchangeComponent::BeginPlay()
 	
 }
 
-
 // Called every frame
 void UMassExchangeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -38,17 +38,6 @@ void UMassExchangeComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UMassExchangeComponent::AddMass(float MassAmount)
 {
 	CurrentMassValue += MassAmount;
-}
-
-void UMassExchangeComponent::RemoveMass(float MassAmount)
-{
-	CurrentMassValue = std::max(0.0f, CurrentMassValue - MassAmount);
-	CheckMassEmpty();
-	
-}
-
-void UMassExchangeComponent::CheckMassEmpty()
-{
 	if (CurrentMassValue <= 0.0f)
 	{
 		DestroyFunctions();
@@ -60,5 +49,26 @@ void UMassExchangeComponent::DestroyFunctions()
 	if (AActor* Owner = GetOwner())
 	{
 		Owner->Destroy();
+	}
+}
+
+void UMassExchangeComponent::HandleMassPlayer_Implementation(UMassExchangeComponent* OtherMEComponent)
+{
+	HandleMass_Implementation(OtherMEComponent);
+}
+
+void UMassExchangeComponent::HandleMass_Implementation(UMassExchangeComponent* OtherMEComponent)
+{
+	if (CurrentMassValue >= OtherMEComponent->CurrentMassValue)
+	{
+		float const temp = CurrentMassValue;
+		AddMass(OtherMEComponent->CurrentMassValue);
+		OtherMEComponent->AddMass(-temp);
+	}
+	else
+	{
+		float const temp = OtherMEComponent->CurrentMassValue;
+		OtherMEComponent->AddMass(CurrentMassValue);
+		AddMass(-temp);
 	}
 }
