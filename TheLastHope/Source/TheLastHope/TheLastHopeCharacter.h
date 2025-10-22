@@ -36,7 +36,7 @@ class ATheLastHopeCharacter : public ACharacter
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	UInputAction* DashAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -69,6 +69,21 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FVector GrabPointer;
 	float MoveRightLeft = 0.f;
+
+	// --- DASH (NEW) ---
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dash", meta = (ClampMin = "0"))
+	float DashSpeed = 2400.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dash", meta = (ClampMin = "0"))
+	float DashAccel = 25000.f; // used for smoothing
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dash")
+	bool bIsDashing = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
+	FVector DashDirection = FVector::ZeroVector;
+
+
 protected:
 
 	/** Called for movement input */
@@ -81,6 +96,14 @@ protected:
 
 	void StopGrapple(const FInputActionValue& Value);
 			
+	void StartDash(const FInputActionValue& Value);
+
+	void StopDash(const FInputActionValue& Value);
+
+	// cache to restore movement feel after dash
+	float SavedGroundFriction = 0.f;
+	float SavedBrakingDecelWalking = 0.f;
+
 
 protected:
 	// APawn interface

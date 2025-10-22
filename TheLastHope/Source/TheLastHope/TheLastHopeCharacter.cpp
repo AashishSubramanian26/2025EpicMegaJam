@@ -13,6 +13,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "CableComponent.h"
+#include "AttachStar.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -141,6 +142,23 @@ void ATheLastHopeCharacter::Tick(float DeltaTime) {
 
 		GetCharacterMovement()->AddForce(Force);
 	}
+
+	if (bIsDashing)
+	{
+		UCharacterMovementComponent* CM = GetCharacterMovement();
+		if (Controller)
+		{
+			// dash in the camera-facing yaw direction
+			const FRotator ControlRot = Controller->GetControlRotation();
+			const FRotator YawOnly(0.f, ControlRot.Yaw, 0.f);
+			DashDirection = FRotationMatrix(YawOnly).GetUnitAxis(EAxis::X);
+		}
+
+		const FVector DesiredVel = DashDirection * DashSpeed;
+
+		// Smoothly drive velocity toward DesiredVel while held
+		CM->Velocity = FMath::VInterpTo(CM->Velocity, DesiredVel, DeltaTime, DashAccel);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -152,8 +170,10 @@ void ATheLastHopeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &ATheLastHopeCharacter::StartDash);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &ATheLastHopeCharacter::StartDash); // keeps updating aim while held
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Completed, this, &ATheLastHopeCharacter::StopDash);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Canceled, this, &ATheLastHopeCharacter::StopDash);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATheLastHopeCharacter::Move);
@@ -250,6 +270,14 @@ void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
 		{
 			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Did hit object"));
 
+			AAttachStar* Star = Cast<AAttachStar>(HitResult.GetActor());
+			if (!Star) {
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hit something, but not an AttachStar"));
+				return; // do nothing if it's not our target class
+			}
+
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Did hit AttachStar"));
+
 			GrabPointer = HitResult.ImpactPoint;
 			isGrappling = true;
 
@@ -286,4 +314,35 @@ void ATheLastHopeCharacter::StopGrapple(const FInputActionValue& Value) {
 	CableVisual->SetVisibility(false);
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Let go of grapple"));
+}
+
+void ATheLastHopeCharacter::StartDash(const FInputActionValue& Value) {
+	// Face direction: use controller yaw (so dash goes where camera is looking horizontally)
+	const FRotator ControlRot = (Controller ? Controller->GetControlRotation() : GetActorRotation());
+	const FRotator YawOnly(0.f, ControlRot.Yaw, 0.f);
+	DashDirection = FRotationMatrix(YawOnly).GetUnitAxis(EAxis::X); // forward
+
+	// Start/refresh dash every frame while held
+	if (!bIsDashing)
+	{
+		bIsDashing = true;
+
+		// save & reduce braking so dash feels snappy
+		UCharacterMovementComponent* CM = GetCharacterMovement();
+		SavedGroundFriction = CM->GroundFriction;
+		SavedBrakingDecelWalking = CM->BrakingDecelerationWalking;
+
+		CM->GroundFriction = 0.f;
+		CM->BrakingDecelerationWalking = 0.f;
+	}
+}
+
+void ATheLastHopeCharacter::StopDash(const FInputActionValue& Value) {
+	if (!bIsDashing) return;
+	bIsDashing = false;
+
+	// restore movement feel
+	UCharacterMovementComponent* CM = GetCharacterMovement();
+	CM->GroundFriction = SavedGroundFriction;
+	CM->BrakingDecelerationWalking = SavedBrakingDecelWalking;
 }
