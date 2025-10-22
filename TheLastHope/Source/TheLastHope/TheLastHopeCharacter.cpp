@@ -14,6 +14,7 @@
 #include "DrawDebugHelpers.h"
 #include "CableComponent.h"
 #include "AttachStar.h"
+#include "Components/ArrowComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -96,6 +97,17 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 	//CableVisual->bEnableStiffness = true;   // optional: nicer feel
 
 	//CableVisual->SetVisibility(false);
+
+	// Debug arrow that rides the sphere surface and points where we look
+	AimArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("AimArrow"));
+	AimArrow->SetupAttachment(SphereVisual);
+	AimArrow->SetRelativeLocation(FVector::ZeroVector);
+	AimArrow->SetRelativeRotation(FRotator::ZeroRotator);
+	AimArrow->SetMobility(EComponentMobility::Movable);
+	AimArrow->ArrowColor = FColor::Yellow;
+	AimArrow->ArrowSize = 1.5f;          // tweak visual size
+	AimArrow->bHiddenInGame = false;      // show in game
+
 }
 
 void ATheLastHopeCharacter::BeginPlay()
@@ -158,6 +170,34 @@ void ATheLastHopeCharacter::Tick(float DeltaTime) {
 
 		// Smoothly drive velocity toward DesiredVel while held
 		CM->Velocity = FMath::VInterpTo(CM->Velocity, DesiredVel, DeltaTime, DashAccel);
+	}
+
+	// --- DEBUG ARROW update: sit on the sphere and point where we look ---
+	if (AimArrow && FollowCamera)
+	{
+		// Sphere center in world space
+		const FVector SphereCenter = SphereVisual->GetComponentLocation();
+
+		// Camera forward (full pitch/yaw, so it tilts up/down with the view)
+		FVector LookDir = FollowCamera->GetForwardVector();
+		if (!LookDir.IsNearlyZero()) { LookDir = LookDir.GetSafeNormal(); }
+
+		// Use your known sphere radius (50) to place arrow on the surface
+		const float SphereRadius = 50.f;
+
+		// A little extra so the arrow doesn't clip into the sphere
+		const float SurfaceOffset = 6.f;
+
+		// Position: center + direction * (radius + small offset)
+		const FVector ArrowPos = SphereCenter + LookDir * (SphereRadius + SurfaceOffset);
+
+		// Apply world transform so it follows perfectly
+		AimArrow->SetWorldLocation(ArrowPos);
+		AimArrow->SetWorldRotation(LookDir.Rotation());
+
+		// Optional: scale arrow length by speed for fun
+		// float Speed = GetVelocity().Size();
+		// AimArrow->SetWorldScale3D(FVector(1.f + Speed * 0.0003f));
 	}
 }
 
