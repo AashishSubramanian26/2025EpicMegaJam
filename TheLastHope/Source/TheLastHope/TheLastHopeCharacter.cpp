@@ -142,6 +142,23 @@ void ATheLastHopeCharacter::Tick(float DeltaTime) {
 
 		GetCharacterMovement()->AddForce(Force);
 	}
+
+	if (bIsDashing)
+	{
+		UCharacterMovementComponent* CM = GetCharacterMovement();
+		if (Controller)
+		{
+			// dash in the camera-facing yaw direction
+			const FRotator ControlRot = Controller->GetControlRotation();
+			const FRotator YawOnly(0.f, ControlRot.Yaw, 0.f);
+			DashDirection = FRotationMatrix(YawOnly).GetUnitAxis(EAxis::X);
+		}
+
+		const FVector DesiredVel = DashDirection * DashSpeed;
+
+		// Smoothly drive velocity toward DesiredVel while held
+		CM->Velocity = FMath::VInterpTo(CM->Velocity, DesiredVel, DeltaTime, DashAccel);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
