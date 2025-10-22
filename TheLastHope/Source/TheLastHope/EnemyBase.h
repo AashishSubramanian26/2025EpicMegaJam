@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MassExchange.h"
 #include "MassExchangeComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
@@ -21,15 +21,21 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	// Components
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Components")
 	UStaticMeshComponent* Body;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Components")
+	USphereComponent* SphereCollisionComp;
+	
+	UPROPERTY(BlueprintReadOnly, Instanced, EditAnywhere, Category="Components")
 	UMassExchangeComponent* MassExchangeComp;
 
-	// On Hit of the Body Mesh
+	
+	// On Begin Overlap of the Sphere Collision of the Body
 	UFUNCTION()
-		void OnBodyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 	
 
 public:	
@@ -38,12 +44,10 @@ public:
 
 	// Hit Cooldown Timer
 	FTimerHandle HitCooldownTimer;
-
-	// Duration of Hit Cooldown
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mass Exchange")
 	float HitCooldownDuration = 0.1f;
 
-	// Resets the Hit Cooldown
 	UFUNCTION()
 	void ResetHitCooldown();
 

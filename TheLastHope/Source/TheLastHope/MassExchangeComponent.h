@@ -7,7 +7,7 @@
 #include "MassExchangeComponent.generated.h"
 
 
-UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable, EditInlineNew, DefaultToInstanced, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THELASTHOPE_API UMassExchangeComponent : public UActorComponent
 {
 	GENERATED_BODY()
