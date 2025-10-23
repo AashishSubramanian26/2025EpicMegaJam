@@ -87,6 +87,8 @@ void AEnemyBase::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 			if (OtherActor == UGameplayStatics::GetPlayerPawn(this, 0))
 			{
 				MassExchangeComp->HandleMassPlayer(OtherMEComponent);
+				// This is the player
+				//OtherMEComponent->HandleMass(MassExchangeComp);
 			}
 			else
 			{

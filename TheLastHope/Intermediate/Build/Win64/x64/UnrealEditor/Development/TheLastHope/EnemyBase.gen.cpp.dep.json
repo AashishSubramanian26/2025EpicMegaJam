@@ -1,0 +1,21 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\unrealeditor\\inc\\thelasthope\\uht\\enemybase.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\x64\\thelasthopeeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\thelasthope\\definitions.thelasthope.h",
+            "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\source\\thelasthope\\enemybase.h",
+            "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\source\\thelasthope\\massexchangecomponent.h",
+            "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\unrealeditor\\inc\\thelasthope\\uht\\massexchangecomponent.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\components\\spherecomponent.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\components\\shapecomponent.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\shapecomponent.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\spherecomponent.generated.h",
+            "c:\\users\\anish\\documents\\github\\2025epicmegajam\\thelasthope\\intermediate\\build\\win64\\unrealeditor\\inc\\thelasthope\\uht\\enemybase.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
