@@ -13,21 +13,24 @@ AEnemyBase::AEnemyBase()
 
 	// All enemies need a mesh and a MassExchangeComponent
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
-
-	//MassExchangeComp = CreateDefaultSubobject<UMassExchangeComponent>(TEXT("MassExchangeComponent"));
-	//MassExchangeComp = FindComponentByClass<UMassExchangeComponent>();
-	//MassExchangeComp->CurrentMassValue = 50.0f;
+	Body->SetupAttachment(RootComponent);
+	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MassExchangeComp = CreateDefaultSubobject<UMassExchangeComponent>(TEXT("MassExchangeComponent"));
 	
-
+	// Set up Collision
+	SphereCollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollisionComponent"));
+	SphereCollisionComp->SetupAttachment(Body);
+	SphereCollisionComp->SetSphereRadius(10.0f);
+	SphereCollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//SphereCollisionComp->SetMobility(EComponentMobility::Movable);
+	SphereCollisionComp->SetGenerateOverlapEvents(true);
 }
 
 // Called when the game starts or when spawned
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	Body->OnComponentHit.AddDynamic(this, &AEnemyBase::OnBodyHit);
-	MassExchangeComp = FindComponentByClass<UMassExchangeComponent>();
-	//MassExchangeComp->CurrentMassValue = 50.0f;
+	SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnCollisionBeginOverlap);
 }
 
 // Called every frame
@@ -53,14 +56,25 @@ void AEnemyBase::StartHitCoolDown_Implementation()
 	//
 }
 
-void AEnemyBase::OnBodyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-                           FVector NormalImpulse, const FHitResult& Hit)
+void AEnemyBase::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+	if (OtherActor == this)
+	{
+		return;
+	}
+	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Entered Overlap"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, OtherActor->GetName());
+	
 	UMassExchangeComponent* OtherMEComponent = Cast<UMassExchangeComponent>(OtherActor->GetComponentByClass(UMassExchangeComponent::StaticClass()));
+	
 	if (OtherMEComponent)
 	{
 		// Enter Hit Cooldown
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Something Hit"));
+		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Found Mass Exchange"));
 		
 		if (!bInHitCooldown)
 		{
@@ -68,11 +82,13 @@ void AEnemyBase::OnBodyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 			GetWorld()->GetTimerManager().SetTimer(HitCooldownTimer, this, &AEnemyBase::ResetHitCooldown, HitCooldownDuration, false);
 			StartHitCoolDown();
 			
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Cooldown Hit"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Cooldown Overlap"));
 			
 			if (OtherActor == UGameplayStatics::GetPlayerPawn(this, 0))
 			{
 				MassExchangeComp->HandleMassPlayer(OtherMEComponent);
+				// This is the player
+				//OtherMEComponent->HandleMass(MassExchangeComp);
 			}
 			else
 			{
@@ -82,6 +98,6 @@ void AEnemyBase::OnBodyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 	}
 	else
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No Mass Exchange Component hit"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Failed Cast to Mass Exchange"));
 	}
 }

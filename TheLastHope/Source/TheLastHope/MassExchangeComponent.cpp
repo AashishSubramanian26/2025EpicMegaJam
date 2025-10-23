@@ -22,6 +22,7 @@ UMassExchangeComponent::UMassExchangeComponent()
 void UMassExchangeComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	//UpdateActorScale();
 
 	// ...
 	
@@ -52,6 +53,11 @@ void UMassExchangeComponent::DestroyFunctions()
 	}
 }
 
+void UMassExchangeComponent::UpdateActorScale_Implementation(float OldMass, float NewMass)
+{
+	//GetOwner()->SetActorScale3D(NewMass/100.0f * FVector(1.0f, 1.0f, 1.0f));
+}
+
 void UMassExchangeComponent::HandleMassPlayer_Implementation(UMassExchangeComponent* OtherMEComponent)
 {
 	HandleMass_Implementation(OtherMEComponent);
@@ -61,14 +67,18 @@ void UMassExchangeComponent::HandleMass_Implementation(UMassExchangeComponent* O
 {
 	if (CurrentMassValue >= OtherMEComponent->CurrentMassValue)
 	{
-		float const temp = CurrentMassValue;
-		AddMass(OtherMEComponent->CurrentMassValue);
-		OtherMEComponent->AddMass(-temp);
-	}
-	else
-	{
-		float const temp = OtherMEComponent->CurrentMassValue;
-		OtherMEComponent->AddMass(CurrentMassValue);
-		AddMass(-temp);
-	}
+		float const OldMass = CurrentMassValue;
+		float const OtherOldMass = OtherMEComponent->CurrentMassValue;
+		AddMass(OtherOldMass);
+		OtherMEComponent->AddMass(-OldMass);
+		UpdateActorScale(OldMass, CurrentMassValue);
+	 	OtherMEComponent->UpdateActorScale(OtherOldMass, OtherMEComponent->CurrentMassValue);
+	} 
+	//else
+	// {
+	// 	float const temp = OtherMEComponent->CurrentMassValue;
+	// 	OtherMEComponent->AddMass(CurrentMassValue);
+	// 	AddMass(-temp);
+	// 	OtherMEComponent->UpdateActorScale_Implementation(temp, OtherMEComponent->CurrentMassValue);
+	// }
 }

@@ -7,7 +7,7 @@
 #include "MassExchangeComponent.generated.h"
 
 
-UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable, EditInlineNew, DefaultToInstanced, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THELASTHOPE_API UMassExchangeComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -38,7 +38,12 @@ public:
 	
 	// Determines how to handle an exchange of mass for a default actor and another actor
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
-		void HandleMass(UMassExchangeComponent* OtherMEComponent); 
+		void HandleMass(UMassExchangeComponent* OtherMEComponent);
+
+	// Sets the owning actor's scale based on the mass
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
+		void UpdateActorScale(float OldMass, float NewMass);
+
 
 	
 	// The Current Mass of the Actor
