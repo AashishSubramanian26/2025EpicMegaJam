@@ -4,6 +4,7 @@
 #include "MassExchangeComponent.h"
 
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UMassExchangeComponent::UMassExchangeComponent()
@@ -21,11 +22,11 @@ UMassExchangeComponent::UMassExchangeComponent()
 void UMassExchangeComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	//UpdateActorScale();
 
 	// ...
 	
 }
-
 
 // Called every frame
 void UMassExchangeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -38,17 +39,6 @@ void UMassExchangeComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UMassExchangeComponent::AddMass(float MassAmount)
 {
 	CurrentMassValue += MassAmount;
-}
-
-void UMassExchangeComponent::RemoveMass(float MassAmount)
-{
-	CurrentMassValue = std::max(0.0f, CurrentMassValue - MassAmount);
-	CheckMassEmpty();
-	
-}
-
-void UMassExchangeComponent::CheckMassEmpty()
-{
 	if (CurrentMassValue <= 0.0f)
 	{
 		DestroyFunctions();
@@ -61,4 +51,34 @@ void UMassExchangeComponent::DestroyFunctions()
 	{
 		Owner->Destroy();
 	}
+}
+
+void UMassExchangeComponent::UpdateActorScale_Implementation(float OldMass, float NewMass)
+{
+	//GetOwner()->SetActorScale3D(NewMass/100.0f * FVector(1.0f, 1.0f, 1.0f));
+}
+
+void UMassExchangeComponent::HandleMassPlayer_Implementation(UMassExchangeComponent* OtherMEComponent)
+{
+	HandleMass_Implementation(OtherMEComponent);
+}
+
+void UMassExchangeComponent::HandleMass_Implementation(UMassExchangeComponent* OtherMEComponent)
+{
+	if (CurrentMassValue >= OtherMEComponent->CurrentMassValue)
+	{
+		float const OldMass = CurrentMassValue;
+		float const OtherOldMass = OtherMEComponent->CurrentMassValue;
+		AddMass(OtherOldMass);
+		OtherMEComponent->AddMass(-OldMass);
+		UpdateActorScale(OldMass, CurrentMassValue);
+	 	OtherMEComponent->UpdateActorScale(OtherOldMass, OtherMEComponent->CurrentMassValue);
+	} 
+	//else
+	// {
+	// 	float const temp = OtherMEComponent->CurrentMassValue;
+	// 	OtherMEComponent->AddMass(CurrentMassValue);
+	// 	AddMass(-temp);
+	// 	OtherMEComponent->UpdateActorScale_Implementation(temp, OtherMEComponent->CurrentMassValue);
+	// }
 }
