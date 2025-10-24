@@ -86,6 +86,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
 	FVector DashDirection = FVector::ZeroVector;
 
+	// How far the grapple can reach when we shoot from the center of the screen
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Grapple")
+	float GrappleMaxDistance = 6000.f;
+
+	// Do we actually have something we can pull toward (AttachStar)?
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
+	bool bHasValidGrappleTarget = false;
+
+
+
 
 protected:
 
@@ -106,6 +116,10 @@ protected:
 	// cache to restore movement feel after dash
 	float SavedGroundFriction = 0.f;
 	float SavedBrakingDecelWalking = 0.f;
+
+	// Save/restore movement mode while dashing (so Z motion works)
+	uint8 SavedMovementMode = MOVE_Walking;
+	uint8 SavedCustomMovementMode = 0;
 
 
 protected:

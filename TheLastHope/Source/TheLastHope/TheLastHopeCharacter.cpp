@@ -85,7 +85,7 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 	CableVisual = CreateDefaultSubobject<UCableComponent>(TEXT("CableVisual"));
 	CableVisual->SetupAttachment(SphereVisual);
 	CableVisual->NumSegments = 1;
-	CableVisual->SetVisibility(false);
+	//CableVisual->SetVisibility(false);
 	CableVisual->bEnableStiffness = true;   // optional: nicer feel
 
 	//CableVisual = CreateDefaultSubobject<UCableComponent>(TEXT("CableVisual"));
@@ -96,18 +96,29 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 	////CableVisual->NumSegments = 20;          // optional: smoother
 	//CableVisual->bEnableStiffness = true;   // optional: nicer feel
 
-	//CableVisual->SetVisibility(false);
+	CableVisual->SetVisibility(true);
 
-	// Debug arrow that rides the sphere surface and points where we look
+// Debug arrow that rides the sphere surface and points where we look
 	AimArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("AimArrow"));
 	AimArrow->SetupAttachment(SphereVisual);
 	AimArrow->SetRelativeLocation(FVector::ZeroVector);
 	AimArrow->SetRelativeRotation(FRotator::ZeroRotator);
 	AimArrow->SetMobility(EComponentMobility::Movable);
 	AimArrow->ArrowColor = FColor::Yellow;
-	AimArrow->ArrowSize = 1.5f;          // tweak visual size
-	AimArrow->bHiddenInGame = false;      // show in game
+	AimArrow->ArrowSize = 1.5f;
+	// Make sure the arrow shows in game and has a clear length
+	AimArrow->SetIsVisualizationComponent(false);
+	AimArrow->SetHiddenInGame(true);
+	AimArrow->SetVisibility(false);
+	AimArrow->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AimArrow->CastShadow = false;
 
+	// Give it a visible length so it sticks out clearly
+	AimArrow->ArrowLength = 120.f;       // <-- add this
+	AimArrow->ArrowSize = 1.5f;
+
+	// Optional: avoid editor-only scaling differences
+	AimArrow->bUseInEditorScaling = false;   // if available in your UE version
 }
 
 void ATheLastHopeCharacter::BeginPlay()
@@ -158,47 +169,45 @@ void ATheLastHopeCharacter::Tick(float DeltaTime) {
 	if (bIsDashing)
 	{
 		UCharacterMovementComponent* CM = GetCharacterMovement();
-		if (Controller)
+
+		// keep DashDirection synced to the arrow each frame (so you can steer with look)
+		if (AimArrow)
 		{
-			// dash in the camera-facing yaw direction
-			const FRotator ControlRot = Controller->GetControlRotation();
-			const FRotator YawOnly(0.f, ControlRot.Yaw, 0.f);
-			DashDirection = FRotationMatrix(YawOnly).GetUnitAxis(EAxis::X);
+			DashDirection = AimArrow->GetForwardVector().GetSafeNormal();
 		}
 
 		const FVector DesiredVel = DashDirection * DashSpeed;
-
-		// Smoothly drive velocity toward DesiredVel while held
 		CM->Velocity = FMath::VInterpTo(CM->Velocity, DesiredVel, DeltaTime, DashAccel);
 	}
 
-	// --- DEBUG ARROW update: sit on the sphere and point where we look ---
-	if (AimArrow && FollowCamera)
+
+	// --- DEBUG ARROW update: sit on the sphere surface and point where we look ---
+	if (AimArrow && SphereVisual && FollowCamera)
 	{
-		// Sphere center in world space
+		// Center of the sphere (world)
 		const FVector SphereCenter = SphereVisual->GetComponentLocation();
 
-		// Camera forward (full pitch/yaw, so it tilts up/down with the view)
+		// Camera forward, normalized (full pitch & yaw so it tilts up/down)
 		FVector LookDir = FollowCamera->GetForwardVector();
-		if (!LookDir.IsNearlyZero()) { LookDir = LookDir.GetSafeNormal(); }
+		LookDir = LookDir.GetSafeNormal();
 
-		// Use your known sphere radius (50) to place arrow on the surface
-		const float SphereRadius = 50.f;
+		// Use the mesh bounds so scale is handled correctly
+		const float SphereRadius = SphereVisual->Bounds.SphereRadius;
 
-		// A little extra so the arrow doesn't clip into the sphere
-		const float SurfaceOffset = 6.f;
+		// Keep the arrow clearly outside the surface
+		const float SurfaceOffset = 12.f;
 
-		// Position: center + direction * (radius + small offset)
+		// Position the arrow origin on the surface in the look direction
 		const FVector ArrowPos = SphereCenter + LookDir * (SphereRadius + SurfaceOffset);
 
-		// Apply world transform so it follows perfectly
 		AimArrow->SetWorldLocation(ArrowPos);
 		AimArrow->SetWorldRotation(LookDir.Rotation());
 
-		// Optional: scale arrow length by speed for fun
-		// float Speed = GetVelocity().Size();
-		// AimArrow->SetWorldScale3D(FVector(1.f + Speed * 0.0003f));
+		// (Optional) also draw a debug arrow so you can verify placement visually
+		// DrawDebugDirectionalArrow(GetWorld(), ArrowPos, ArrowPos + LookDir * AimArrow->ArrowLength,
+		//                           25.f, FColor::Yellow, false, 0.f, 0, 4.f);
 	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -304,7 +313,7 @@ void ATheLastHopeCharacter::Grapple(const FInputActionValue& Value) {
 			QueryParams
 		);
 
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.0f, 0, 2.5f);
+		/*DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.0f, 0, 2.5f);*/
 
 		if (bHit == true)
 		{
@@ -356,33 +365,52 @@ void ATheLastHopeCharacter::StopGrapple(const FInputActionValue& Value) {
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Let go of grapple"));
 }
 
-void ATheLastHopeCharacter::StartDash(const FInputActionValue& Value) {
-	// Face direction: use controller yaw (so dash goes where camera is looking horizontally)
-	const FRotator ControlRot = (Controller ? Controller->GetControlRotation() : GetActorRotation());
-	const FRotator YawOnly(0.f, ControlRot.Yaw, 0.f);
-	DashDirection = FRotationMatrix(YawOnly).GetUnitAxis(EAxis::X); // forward
+void ATheLastHopeCharacter::StartDash(const FInputActionValue& Value)
+{
+	// Use the arrow's full forward (pitch + yaw). Fallback to camera if needed.
+	if (AimArrow)
+	{
+		DashDirection = AimArrow->GetForwardVector().GetSafeNormal();
+	}
+	else if (FollowCamera)
+	{
+		DashDirection = FollowCamera->GetForwardVector().GetSafeNormal();
+	}
+	else
+	{
+		const FRotator ControlRot = (Controller ? Controller->GetControlRotation() : GetActorRotation());
+		DashDirection = ControlRot.Vector().GetSafeNormal();
+	}
 
-	// Start/refresh dash every frame while held
 	if (!bIsDashing)
 	{
 		bIsDashing = true;
 
-		// save & reduce braking so dash feels snappy
 		UCharacterMovementComponent* CM = GetCharacterMovement();
+
+		// Save walking feel & movement mode
 		SavedGroundFriction = CM->GroundFriction;
 		SavedBrakingDecelWalking = CM->BrakingDecelerationWalking;
+		SavedMovementMode = CM->MovementMode;
+		SavedCustomMovementMode = CM->CustomMovementMode;
 
+		// Make dash feel snappy and allow vertical movement
 		CM->GroundFriction = 0.f;
 		CM->BrakingDecelerationWalking = 0.f;
+		CM->SetMovementMode(MOVE_Flying);    // <-- lets us dash up/diagonal
 	}
 }
 
-void ATheLastHopeCharacter::StopDash(const FInputActionValue& Value) {
+
+void ATheLastHopeCharacter::StopDash(const FInputActionValue& Value)
+{
 	if (!bIsDashing) return;
 	bIsDashing = false;
 
-	// restore movement feel
 	UCharacterMovementComponent* CM = GetCharacterMovement();
+
+	// Restore movement mode and feel
 	CM->GroundFriction = SavedGroundFriction;
 	CM->BrakingDecelerationWalking = SavedBrakingDecelWalking;
+	CM->SetMovementMode((EMovementMode)SavedMovementMode, SavedCustomMovementMode);
 }
