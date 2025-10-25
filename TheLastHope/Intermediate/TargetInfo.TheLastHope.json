@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "TheLastHope",
+			"Path": "..\\Source\\TheLastHope.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "TheLastHopeEditor",
+			"Path": "..\\Source\\TheLastHopeEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

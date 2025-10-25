@@ -40,9 +40,14 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
 		void HandleMass(UMassExchangeComponent* OtherMEComponent);
 
+	// Exchanges Mass
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
+		void ExchangeMass(UMassExchangeComponent* Gainer, UMassExchangeComponent* Loser);
+
+
 	// Sets the owning actor's scale based on the mass
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Mass Exchange")
-		void UpdateActorScale(float OldMass, float NewMass);
+		void UpdateActorScale(float NewMass);
 
 
 	
