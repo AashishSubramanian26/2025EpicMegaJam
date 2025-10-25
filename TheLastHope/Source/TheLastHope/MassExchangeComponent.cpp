@@ -53,32 +53,37 @@ void UMassExchangeComponent::DestroyFunctions()
 	}
 }
 
-void UMassExchangeComponent::UpdateActorScale_Implementation(float OldMass, float NewMass)
+void UMassExchangeComponent::ExchangeMass_Implementation(UMassExchangeComponent* Gainer, UMassExchangeComponent* Loser)
 {
-	//GetOwner()->SetActorScale3D(NewMass/100.0f * FVector(1.0f, 1.0f, 1.0f));
+	float const GainerOldMass = Gainer->CurrentMassValue;
+	float const LoserOldMass = Loser->CurrentMassValue;
+	Gainer->AddMass(LoserOldMass);
+	Loser->AddMass(-GainerOldMass);
+
+	//Gainer->UpdateActorScale();
+}
+
+void UMassExchangeComponent::UpdateActorScale_Implementation(float NewMass)
+{
+	GetOwner()->SetActorScale3D(NewMass/100.0f * FVector(1.0f, 1.0f, 1.0f));
 }
 
 void UMassExchangeComponent::HandleMassPlayer_Implementation(UMassExchangeComponent* OtherMEComponent)
 {
-	HandleMass_Implementation(OtherMEComponent);
+	HandleMass(OtherMEComponent);
 }
 
 void UMassExchangeComponent::HandleMass_Implementation(UMassExchangeComponent* OtherMEComponent)
 {
 	if (CurrentMassValue >= OtherMEComponent->CurrentMassValue)
 	{
-		float const OldMass = CurrentMassValue;
-		float const OtherOldMass = OtherMEComponent->CurrentMassValue;
-		AddMass(OtherOldMass);
-		OtherMEComponent->AddMass(-OldMass);
-		UpdateActorScale(OldMass, CurrentMassValue);
-	 	OtherMEComponent->UpdateActorScale(OtherOldMass, OtherMEComponent->CurrentMassValue);
+		ExchangeMass(this, OtherMEComponent);
 	} 
-	//else
-	// {
-	// 	float const temp = OtherMEComponent->CurrentMassValue;
-	// 	OtherMEComponent->AddMass(CurrentMassValue);
-	// 	AddMass(-temp);
-	// 	OtherMEComponent->UpdateActorScale_Implementation(temp, OtherMEComponent->CurrentMassValue);
-	// }
+	else
+	{
+		ExchangeMass(OtherMEComponent, this);
+	}
+	
+	UpdateActorScale(CurrentMassValue);
+	OtherMEComponent->UpdateActorScale(OtherMEComponent->CurrentMassValue);
 }
