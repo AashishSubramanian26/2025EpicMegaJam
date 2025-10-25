@@ -70,8 +70,28 @@ ATheLastHopeCharacter::ATheLastHopeCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+
+	// how far back the camera sits
+	CameraBoom->TargetArmLength = 500.0f; // a little farther back than 400 for readability
+
+	// let player rotate camera with mouse
+	CameraBoom->bUsePawnControlRotation = true;
+
+	// --- NEW: shoulder / elevated view ---
+
+	// Move camera pivot slightly above the sphere so you're looking down at it a bit
+	// Z = up. Try 80-120, tweak in editor later.
+	CameraBoom->TargetOffset = FVector(0.f, 0.f, 80.f);
+
+	// Move the actual camera socket a little to the right and a little up, so we’re
+	// not dead-behind the ball. Y = right, Z = up in UE.
+	CameraBoom->SocketOffset = FVector(0.f, 60.f, 40.f);
+
+	// Reduce how aggressively the camera gets shoved forward by world collision.
+	// You can keep collision on (good for not clipping through walls), just tune it.
+	CameraBoom->bDoCollisionTest = true;
+	CameraBoom->ProbeSize = 8.f;      
+	CameraBoom->ProbeChannel = ECC_Camera;
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
